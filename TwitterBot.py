@@ -11,21 +11,58 @@ APP_SECRET = "iesymLrCGhL8HcTLqyo0KSmYvZrxcfolqmi1Q06lnj5beHQEcU"
 OAUTH_TOKEN = "3050210471-Ka1iB255E90jNpOVFLFIymGwqXVdQKEw8YgpNlk"
 OAUTH_TOKEN_SECRET = "I67LL9hhAmcWobFD8qPaAY7YEKs2gdHlaL0IoOx3ggSmw"
 
-class RobotListener(StreamListener):
-    
-    def findLegalCommands(self, text):
+def findLegalCommands(text):
+        indexes = []
         for _command in LEGAL_COMMANDS:
-            if not (text.upper().find(_command.upper()) == -1):
-                return _command
-        return ""
+            indexes.append(text.upper().find(_command.upper()))
+            #if not (text.upper().find(_command.upper()) == -1):
+                #return _command
+        minn = indexes[0]
+        minIndex = 0
+        for i in range(len(indexes)):
+            if not indexes[i] == -1:
+                if indexes[i] < minn or minn == -1:
+                    minn = indexes[i]
+                    minIndex = i
+        if minn == -1:
+            return ""
+        else:
+            return LEGAL_COMMANDS[minIndex]
 
-    def on_data(self, data):
-        jsonData = json.loads(data)
-        print self.findLegalCommands(jsonData['text'])
-        return True
+##class RobotListener(StreamListener):
+##    
+##    def findLegalCommands(self, text):
+##        indexes = []
+##        for _command in LEGAL_COMMANDS:
+##            indexes.append(text.upper().find(_command.upper()))
+##            #if not (text.upper().find(_command.upper()) == -1):
+##                #return _command
+##        minn = indexes[0]
+##        minIndex = 0
+##        for i in range(len(indexes)):
+##            if not indexes[i] == -1:
+##                if indexes[i] < minn:
+##                    minn = indexes[i]
+##                    minIndex = i
+##        if minn == -1:
+##            return ""
+##        else:
+##            return LEGAL_COMMANDS[minIndex]
+##
+##    def on_data(self, data):
+##        jsonData = json.loads(data)
+##        print self.findLegalCommands(jsonData['text'])
+##        return True
 
 auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
 auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
-robotStream = Stream(auth, RobotListener())
-robotStream.filter(track=["@ChristieBond007"])
+##robotStream = Stream(auth, RobotListener())
+##robotStream.filter(track=["@ChristieBond007"])
+
+api = tweepy.API(auth)
+
+mentions = api.mentions_timeline(count=20)
+
+for mention in mentions:
+    print findLegalCommands(mention.text)
