@@ -67,11 +67,9 @@ class RobotThread (threading.Thread):
                                         print "Moving backward"
                                 elif command == LEGAL_COMMANDS[2]:
                                         movement.turn(-math.pi/2.0)
-                                        movement.move(1)
                                         print "Moving left"
                                 elif command == LEGAL_COMMANDS[3]:
                                         movement.turn(math.pi/2.0)
-                                        movement.move(1)
                                         print "Moving right"
                                                 
                         time.sleep(5)
