@@ -25,9 +25,26 @@ def findLegalCommands(text):
                     minn = indexes[i]
                     minIndex = i
         if minn == -1:
-            return ""
+        	return ""
         else:
             return LEGAL_COMMANDS[minIndex]
+
+auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
+auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+
+api = tweepy.API(auth)
+
+mentions = api.mentions_timeline(count=10)
+
+arrayOfCommands = [] 
+for mention in mentions:
+	validCommand = findLegalCommands(mention.text)
+	if not validCommand == "":
+		arrayOfCommands.append(validCommand)
+
+
+print arrayOfCommands
+
 
 ##class RobotListener(StreamListener):
 ##    
@@ -54,15 +71,5 @@ def findLegalCommands(text):
 ##        print self.findLegalCommands(jsonData['text'])
 ##        return True
 
-auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
-auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-
 ##robotStream = Stream(auth, RobotListener())
 ##robotStream.filter(track=["@ChristieBond007"])
-
-api = tweepy.API(auth)
-
-mentions = api.mentions_timeline(count=20)
-
-for mention in mentions:
-    print findLegalCommands(mention.text)
