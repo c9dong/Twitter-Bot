@@ -73,3 +73,13 @@ print arrayOfCommands
 
 ##robotStream = Stream(auth, RobotListener())
 ##robotStream.filter(track=["@ChristieBond007"])
+api = tweepy.API(auth)
+
+while True:
+    mentions = api.mentions_timeline(count=10)
+
+    for mention in mentions:
+        print findLegalCommands(mention.text)
+        #do stuff to robot
+    time.sleep(10)
+
