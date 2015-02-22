@@ -61,16 +61,16 @@ class RobotThread (threading.Thread):
                                 command = queue.pop(0)
                                 if command == LEGAL_COMMANDS[0]:
                                         movement.move(1)
-                                        print "Forward"
+                                        print "Moving forward"
                                 elif command == LEGAL_COMMANDS[1]:
                                         movement.move(-1)
-                                        print "Backward"
+                                        print "Moving backward"
                                 elif command == LEGAL_COMMANDS[2]:
                                         movement.turn(-math.pi/2.0)
-                                        print "Left"
+                                        print "Moving left"
                                 elif command == LEGAL_COMMANDS[3]:
                                         movement.turn(math.pi/2.0)
-                                        print "Right"
+                                        print "Moving right"
                                                 
                         time.sleep(5)
 
@@ -81,6 +81,6 @@ robotThread.start()
 auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
 auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 robotStream = Stream(auth, RobotListener())
-robotStream.filter(track=["@ChristieBond007"])
+robotStream.filter(track=["@BlueberryPii"])
 
 
