@@ -1,11 +1,14 @@
+import threading
 import time
 import tweepy
 import collections
-from tweepy import Stream
-from tweepy.streaming import StreamListener
+import RobotListener
 import json
 import movement
 import math
+from tweepy import Stream
+from tweepy.streaming import StreamListener
+
 
 LEGAL_COMMANDS = ["forward", "backward", "left", "right"]
 
@@ -14,7 +17,11 @@ APP_SECRET = "iesymLrCGhL8HcTLqyo0KSmYvZrxcfolqmi1Q06lnj5beHQEcU"
 OAUTH_TOKEN = "3050210471-Ka1iB255E90jNpOVFLFIymGwqXVdQKEw8YgpNlk"
 OAUTH_TOKEN_SECRET = "I67LL9hhAmcWobFD8qPaAY7YEKs2gdHlaL0IoOx3ggSmw"
 
-def findLegalCommands(text):
+queue = []
+
+class RobotListener(StreamListener):
+
+    def findLegalCommands(self, text):
         indexes = []
         for _command in LEGAL_COMMANDS:
             indexes.append(text.upper().find(_command.upper()))
@@ -29,31 +36,51 @@ def findLegalCommands(text):
             return ""
         else:
             return LEGAL_COMMANDS[minIndex]
+    
+    def on_data(self, data):
+        print "Data:"
+        jsonData = json.loads(data)
+        command = self.findLegalCommands(jsonData['text'])
+        print command
+        queue.append(command)
+        return True
+
+
+class RobotThread (threading.Thread):
+        def __init__(self, threadID, name, counter):
+                threading.Thread.__init__(self)
+                self.threadID = threadID
+                self.name = name
+                self.counter = counter
+                self.queue = []
+
+        def run(self):
+                while True:
+                        print len(queue)
+                        if(len(queue) > 0):
+                                command = queue.pop(0)
+                                if command == LEGAL_COMMANDS[0]:
+                                        movement.move(1)
+                                        print "Forward"
+                                elif command == LEGAL_COMMANDS[1]:
+                                        movement.move(-1)
+                                        print "Backward"
+                                elif command == LEGAL_COMMANDS[2]:
+                                        movement.turn(-math.pi/2.0)
+                                        print "Left"
+                                elif command == LEGAL_COMMANDS[3]:
+                                        movement.turn(math.pi/2.0)
+                                        print "Right"
+                                                
+                        time.sleep(5)
+
+
+robotThread = RobotThread(1, "RobotThread", 1)
+robotThread.start()
 
 auth = tweepy.OAuthHandler(APP_KEY, APP_SECRET)
 auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+robotStream = Stream(auth, RobotListener())
+robotStream.filter(track=["@ChristieBond007"])
 
-api = tweepy.API(auth)
 
-while True:
-    mentions = api.mentions_timeline(count=10)
-
-    arrayOfCommands = [] 
-    for mention in mentions:
-        validCommand = findLegalCommands(mention.text)
-        if not validCommand == "":
-            arrayOfCommands.append(validCommand)
-    #print arrayOfCommands
-    command = collections.Counter(arrayOfCommands).most_common(1)[0][0]
-    if command == LEGAL_COMMANDS[0]:
-        movement.move(1)
-    elif command == LEGAL_COMMANDS[1]:
-        movement.move(-1)
-    elif command == LEGAL_COMMANDS[2]:
-        movement.turn(-math.pi/2.0)
-        movement.move(1)
-    elif command == LEGAL_COMMANDS[3]:
-        movement.turn(math.pi/2.0)
-        movement.move(1)
-                
-    time.sleep(10)

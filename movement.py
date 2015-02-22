@@ -7,7 +7,7 @@ GPIO.setup(12, GPIO.OUT)
 left_pwm = GPIO.PWM(12, 100)
 left_pwm.start(15)
 
-#GPIO.setup(33, GPIO.OUT)
+GPIO.setup(33, GPIO.OUT)
 right_pwm = GPIO.PWM(33, 100)
 right_pwm.start(15)
 
