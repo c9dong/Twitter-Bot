@@ -50,10 +50,10 @@ while True:
     elif command == LEGAL_COMMANDS[1]:
         movement.move(-1)
     elif command == LEGAL_COMMANDS[2]:
-        movement.turn(-math.PI/2.0)
+        movement.turn(-math.pi/2.0)
         movement.move(1)
     elif command == LEGAL_COMMANDS[3]:
-        movement.turn(math.PI/2.0)
+        movement.turn(math.pi/2.0)
         movement.move(1)
                 
     time.sleep(10)

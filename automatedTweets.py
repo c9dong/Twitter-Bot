@@ -14,11 +14,12 @@ auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
 # automated tweets for demo purposes
-randomNum = random.randint(-1,3)
-appendNum = random.randint(0,5000)
+for n in range(1):
+    randomNum = random.randint(-1,3)
+    appendNum = random.randint(0,5000)
 
-randomCommand = LEGAL_COMMANDS[randomNum]
-tweet = "@ChristieBond007 "+ randomCommand + str(appendNum)
+    randomCommand = LEGAL_COMMANDS[randomNum]
+    tweet = "@ChristieBond007 "+ randomCommand + str(appendNum)
 
 
-api.update_status(status = tweet)
+    api.update_status(status = tweet)
