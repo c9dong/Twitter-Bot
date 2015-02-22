@@ -72,7 +72,7 @@ class RobotThread (threading.Thread):
                                         movement.turn(math.pi/2.0)
                                         print "Moving right"
                                                 
-                        time.sleep(5)
+                        time.sleep(3)
 
 
 robotThread = RobotThread(1, "RobotThread", 1)
