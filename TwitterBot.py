@@ -1,5 +1,6 @@
 import time
 import tweepy
+import collections
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 import json
@@ -34,38 +35,19 @@ auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 api = tweepy.API(auth)
 
-mentions = api.mentions_timeline(count=10)
+while True:
+	mentions = api.mentions_timeline(count=10)
 
-arrayOfCommands = [] 
-for mention in mentions:
-	validCommand = findLegalCommands(mention.text)
-	if not validCommand == "":
-		arrayOfCommands.append(validCommand)
+	arrayOfCommands = [] 
+	for mention in mentions:
+		validCommand = findLegalCommands(mention.text)
+		if not validCommand == "":
+			arrayOfCommands.append(validCommand)
+	print arrayOfCommands
+	print collections.Counter(arrayOfCommands).most_common(1)[0][0]
+	time.sleep(10)
 
 
-print arrayOfCommands
-
-
-##class RobotListener(StreamListener):
-##    
-##    def findLegalCommands(self, text):
-##        indexes = []
-##        for _command in LEGAL_COMMANDS:
-##            indexes.append(text.upper().find(_command.upper()))
-##            #if not (text.upper().find(_command.upper()) == -1):
-##                #return _command
-##        minn = indexes[0]
-##        minIndex = 0
-##        for i in range(len(indexes)):
-##            if not indexes[i] == -1:
-##                if indexes[i] < minn:
-##                    minn = indexes[i]
-##                    minIndex = i
-##        if minn == -1:
-##            return ""
-##        else:
-##            return LEGAL_COMMANDS[minIndex]
-##
 ##    def on_data(self, data):
 ##        jsonData = json.loads(data)
 ##        print self.findLegalCommands(jsonData['text'])
@@ -73,13 +55,5 @@ print arrayOfCommands
 
 ##robotStream = Stream(auth, RobotListener())
 ##robotStream.filter(track=["@ChristieBond007"])
-api = tweepy.API(auth)
 
-while True:
-    mentions = api.mentions_timeline(count=10)
-
-    for mention in mentions:
-        print findLegalCommands(mention.text)
-        #do stuff to robot
-    time.sleep(10)
 
