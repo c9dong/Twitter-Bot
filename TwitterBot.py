@@ -62,7 +62,10 @@ auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 api = tweepy.API(auth)
 
-mentions = api.mentions_timeline(count=20)
+while True:
+    mentions = api.mentions_timeline(count=10)
 
-for mention in mentions:
-    print findLegalCommands(mention.text)
+    for mention in mentions:
+        print findLegalCommands(mention.text)
+        #do stuff to robot
+    time.sleep(10)
