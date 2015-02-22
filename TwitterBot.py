@@ -4,6 +4,8 @@ import collections
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 import json
+import movement
+import math
 
 LEGAL_COMMANDS = ["forward", "backward", "left", "right"]
 
@@ -16,8 +18,6 @@ def findLegalCommands(text):
         indexes = []
         for _command in LEGAL_COMMANDS:
             indexes.append(text.upper().find(_command.upper()))
-            #if not (text.upper().find(_command.upper()) == -1):
-                #return _command
         minn = indexes[0]
         minIndex = 0
         for i in range(len(indexes)):
@@ -26,7 +26,7 @@ def findLegalCommands(text):
                     minn = indexes[i]
                     minIndex = i
         if minn == -1:
-        	return ""
+            return ""
         else:
             return LEGAL_COMMANDS[minIndex]
 
@@ -36,24 +36,24 @@ auth.set_access_token(OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 while True:
-	mentions = api.mentions_timeline(count=10)
+    mentions = api.mentions_timeline(count=10)
 
-	arrayOfCommands = [] 
-	for mention in mentions:
-		validCommand = findLegalCommands(mention.text)
-		if not validCommand == "":
-			arrayOfCommands.append(validCommand)
-	print arrayOfCommands
-	print collections.Counter(arrayOfCommands).most_common(1)[0][0]
-	time.sleep(10)
-
-
-##    def on_data(self, data):
-##        jsonData = json.loads(data)
-##        print self.findLegalCommands(jsonData['text'])
-##        return True
-
-##robotStream = Stream(auth, RobotListener())
-##robotStream.filter(track=["@ChristieBond007"])
-
-
+    arrayOfCommands = [] 
+    for mention in mentions:
+        validCommand = findLegalCommands(mention.text)
+        if not validCommand == "":
+            arrayOfCommands.append(validCommand)
+    #print arrayOfCommands
+    command = collections.Counter(arrayOfCommands).most_common(1)[0][0]
+    if command == LEGAL_COMMANDS[0]:
+        movement.move(1)
+    elif command == LEGAL_COMMANDS[1]:
+        movement.move(-1)
+    elif command == LEGAL_COMMANDS[2]:
+        movement.turn(-math.PI/2.0)
+        movement.move(1)
+    elif command == LEGAL_COMMANDS[3]:
+        movement.turn(math.PI/2.0)
+        movement.move(1)
+                
+    time.sleep(10)
