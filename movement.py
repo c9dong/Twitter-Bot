@@ -1,43 +1,51 @@
-import time
+import RPi.GPIO as GPIO
+import time, math
 
-left_servo_velocity = 0
-right_servo_velocity = 0
-WHEEL_CIRCUMFERENCE = 0
+GPIO.setmode(GPIO.BOARD)
 
-#speed in meters/second, distance in meters
-def move_forward(speed, distance):
+GPIO.setup(12, GPIO.OUT)
+left_pwm = GPIO.PWM(12, 100)
+left_pwm.start(15)
 
-	WHEEL_CONSTANT = 1
-	start_time = time.time()
+GPIO.setup(33, GPIO.OUT)
+right_pwm = GPIO.PWM(33, 100)
+right_pwm.start(15)
 
-	left_servo_velocity = speed
-	right_servo_velocity = speed
+MAX_ANGULAR_SPEED = 3 * math.pi # fastest possible angular speed of a wheel (radians/second)
+MAX_TURNING_SPEED = 0.7 * math.pi # fastest possible angular speed of the entire robot (radians/second)
+WHEEL_CIRCUMFERENCE = 0.2775 # circumference of each wheel (meters)
 
-	speed_in_meters_per_second = WHEEL_CONSTANT * speed * WHEEL_CIRCUMFERENCE
+def move(distance, speed = 1):
+    """
+    Moves linearly by distance `distance` (meters) at speed `speed` (0 to 1).
+    """
+    assert 0 <= speed <= 1
 
-	while True:
-		current_time = time.time()
-		if (current_time - start_time >= distance / speed_in_meters_per_second):
-			break
+    left_pwm.ChangeDutyCycle(15 + 5 * speed * (1 if distance >= 0 else -1))
+    right_pwm.ChangeDutyCycle(15 - 5 * speed * (1 if distance >= 0 else -1))
 
-	left_servo_velocity = 0
-	right_servo_velocity = 0
+    speed_meters_per_second = speed * MAX_ANGULAR_SPEED * WHEEL_CIRCUMFERENCE
+    time.sleep(abs(distance) / speed_meters_per_second)
 
-#speed in radians/second, angle in radians
-def turn_right(speed, angle):
+    left_pwm.ChangeDutyCycle(15)
+    right_pwm.ChangeDutyCycle(15)
 
-	TURNING_CONSTANT = 1
-	start_time = time.time()
+def turn(angle, speed = 1):
+    """
+    Turns in-place by angle `angle` (radians) at angular speed `speed` (0 to 1).
+    """
+    assert 0 <= speed <= 1
 
-	left_servo_velocity = speed
-	right_servo_velocity = -speed
+    duty = 15 - 5 * speed * (1 if angle >= 0 else -1)
+    left_pwm.ChangeDutyCycle(duty)
+    right_pwm.ChangeDutyCycle(duty)
 
-	speed_in_radians_per_second = TURNING_CONSTANT * speed
+    speed_radians_per_second = speed * MAX_TURNING_SPEED
+    time.sleep(abs(angle) / speed_radians_per_second)
+    
+    left_pwm.ChangeDutyCycle(15)
+    right_pwm.ChangeDutyCycle(15)
 
-	while True:
-		current_time = time.time()
-		if (current_time - start_time >= angle / speed_in_radians_per_second):
-			break
-
-	left_servo_velocity = 0
-	right_servo_velocity = 0
+if __name__ == "__main__":
+    move(10)
+    turn(math.pi / 2)
