@@ -4,7 +4,7 @@ import time, math
 SERVO_NEUTRAL, SERVO_EXTENT = 14, 6
 MAX_ANGULAR_SPEED = 1.2 * math.pi # fastest possible angular speed of a wheel (radians/second)
 MAX_TURNING_SPEED = 0.7 * math.pi # fastest possible angular speed of the entire robot (radians/second)
-WHEEL_CIRCUMFERENCE = 0.045 # circumference of each wheel (meters)
+WHEEL_RADIUS = 0.045 # radius of each wheel (meters)
 
 # set up PWM pins
 GPIO.setmode(GPIO.BOARD)
@@ -24,7 +24,7 @@ def move(distance, speed = 1):
     left_pwm.ChangeDutyCycle(SERVO_NEUTRAL + SERVO_EXTENT * speed * (1 if distance >= 0 else -1))
     right_pwm.ChangeDutyCycle(SERVO_NEUTRAL - SERVO_EXTENT * speed * (1 if distance >= 0 else -1))
 
-    speed_meters_per_second = speed * MAX_ANGULAR_SPEED * WHEEL_CIRCUMFERENCE
+    speed_meters_per_second = speed * MAX_ANGULAR_SPEED * WHEEL_RADIUS
     time.sleep(abs(distance) / speed_meters_per_second)
 
     left_pwm.ChangeDutyCycle(SERVO_NEUTRAL)
@@ -47,5 +47,5 @@ def turn(angle, speed = 1):
     right_pwm.ChangeDutyCycle(SERVO_NEUTRAL)
 
 if __name__ == "__main__":
-    move(10)
+    move(1)
     turn(math.pi / 2)
