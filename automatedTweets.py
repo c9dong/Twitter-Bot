@@ -19,7 +19,7 @@ for n in range(1):
     appendNum = random.randint(0,5000)
 
     randomCommand = LEGAL_COMMANDS[randomNum]
-    tweet = "@ChristieBond007 "+ randomCommand + str(appendNum)
+    tweet = "@BlueberryPii "+ randomCommand + str(appendNum)
 
 
     api.update_status(status = tweet)
