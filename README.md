@@ -3,7 +3,7 @@ Twitter-Bot 8000
 
 Robots. Twitter. Googly eyes.
 
-[Check out our ChallengePost entry!](http://mchacks15.challengepost.com/submissions/33128-twitter-bot-8000)
+# [Check out our ChallengePost entry!](http://mchacks15.challengepost.com/submissions/33128-twitter-bot-8000)
 
 Twitter-Bot is a social robot that loves to follow all the latest trends in locomotion, such as "forward", -"backward", "left", and "right"!
 
@@ -12,6 +12,19 @@ Twitter-Bot is made from servos, breadboards, and a Raspberry Pi as the brains o
 Just turn it on, then tweet `@BlueberryPii forward` to try it out! Valid commands are `forward`, `backward`, `left`, and `right` (e.g., `@BlueberryPii move forward!`, `go left @BlueberryPii!`.
 
 This repository contains various working files used in the process of creating the robot, plus photos!
+
+Pictures
+--------
+
+![Main](Pictures/2015-02-22 02.40.37.jpg)
+
+![Computer](Pictures/2015-02-22 02.42.52.jpg)
+
+![Bottom](Pictures/2015-02-22 02.43.21.jpg)
+
+![Power](Pictures/2015-02-22 02.43.46.jpg)
+
+![Top](Pictures/2015-02-22 02.44.12.jpg)
 
 Run it yourself
 ---------------
@@ -27,8 +40,3 @@ First, make sure you have all the dependencies:
 Now we can run the program:
 
     sudo python TwitterBotAsync.py # needs to be run as root in order to access the Raspberry Pi GPIO
-
-Pictures
---------
-
-;wip
